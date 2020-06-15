@@ -1,13 +1,11 @@
 import asyncio
-import sys
 from typing import Iterable, Tuple
 
-import pytest
 from asyncpg import Record
 
 from spider.db import DB
 
-from .fixtures import event_loop
+from .fixtures import async_test, event_loop
 
 USER = 'spider'
 PASSWORD = 'friendlyneighborhoodspider'
@@ -71,6 +69,7 @@ def compare_records_sets(records: Iterable[Tuple[str, str, str]], test_records: 
     test_records = {(test_record['url'], test_record['title']) for test_record in test_records}
     assert records == test_records
 
+
 async def truncate_table(db: DB):
 
     query = 'TRUNCATE TABLE scrapped_data'
@@ -81,8 +80,9 @@ async def truncate_table(db: DB):
 # АСИНХРОННЫЕ ФУНКЦИИ ТЕСТОВ #
 ##############################
 
-async def async_test_add_record():
-    
+@async_test
+async def test_add_record(event_loop):
+
     record = ('https://example.com', 'title', 'html')
 
     async with DB(USER, PASSWORD, DATABASE, HOST) as db:
@@ -94,7 +94,7 @@ async def async_test_add_record():
             counter += 1
             compare_records(record, test_record)
         assert counter == 1
-        
+
         counter = 0
         async for test_record in db.get_records('another.example.com'):
             counter += 1
@@ -108,7 +108,8 @@ async def async_test_add_record():
         await truncate_table(db)
 
 
-async def async_test_add_records():
+@async_test
+async def test_add_records(event_loop):
 
     records = [
         ('https://example.com', 'title', 'html'),
@@ -130,7 +131,8 @@ async def async_test_add_records():
         await truncate_table(db)
 
 
-async def async_test_get_records():
+@async_test
+async def test_get_records(event_loop):
 
     records = [(f'https://{i}.example.com', f'title{i}', f'html{i}') for i in range(10)]
 
@@ -163,7 +165,8 @@ async def async_test_get_records():
         await truncate_table(db)
 
 
-async def async_test_get_many_records():
+@async_test
+async def test_get_many_records(event_loop):
 
     records = [(f'https://{i}.example.com', f'title{i}', f'html{i}') for i in range(10)]
     records += [(f'https://{i}.another.example.com', f'another_title{i}', f'another_html{i}') for i in range(10)]
@@ -215,23 +218,3 @@ async def async_test_get_many_records():
         assert len(test_records - records) == 0
 
         await truncate_table(db)
-    
-
-#############################
-# СИНХРОННЫЕ ФУНКЦИИ ТЕСТОВ #
-#############################
-
-def test_add_record(event_loop: asyncio.AbstractEventLoop):
-    event_loop.run_until_complete(async_test_add_record())
-
-
-def test_add_records(event_loop: asyncio.AbstractEventLoop):
-    event_loop.run_until_complete(async_test_add_records())
-
-
-def test_get_records(event_loop: asyncio.AbstractEventLoop):
-    event_loop.run_until_complete(async_test_get_records())
-
-
-def test_get_many_records(event_loop: asyncio.AbstractEventLoop):
-    event_loop.run_until_complete(async_test_get_many_records())

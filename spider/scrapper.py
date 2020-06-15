@@ -1,10 +1,10 @@
 import sys
-from asyncio import Task, gather, sleep, wait_for, TimeoutError
+from asyncio import Task, gather, sleep, TimeoutError
 from typing import List, Tuple, Union
 from urllib.parse import urljoin, urlparse
 
 from aiohttp import ClientSession
-from aiohttp.client_exceptions import ClientOSError, ServerConnectionError
+from aiohttp.client_exceptions import ClientError
 from bs4 import BeautifulSoup, Tag
 
 
@@ -57,7 +57,7 @@ class Scrapper:
         :type url: str
         :return: домен второго уровня
         :rtype: str
-        
+
         >>> Scrapper.get_base_domain('https://up.example.com')
         'example.com'
         >>> Scrapper.get_base_domain('https://example.com/')
@@ -164,7 +164,7 @@ class Scrapper:
 
         # проверяем тип контента
         for attempt in range(self.MAX_ATTEMPTS):
-            
+
             try:
                 async with self._session.head(url, timeout=self.TIMEOUT) as head:
                     content_type = head.headers.get('Content-Type', '')
@@ -175,12 +175,13 @@ class Scrapper:
                         return None
                     else:
                         break
-            
-            except (ServerConnectionError, ClientOSError, TimeoutError):
+
+            except (ClientError, TimeoutError):
                 if attempt < self.MAX_ATTEMPTS - 1:
                     await sleep(self.SLEEP_TIME)
 
         else:
+            self.stat['connection_error'] = self.stat.get('connection_error', 0) + 1
             return None
 
         # если тип контента подходящий, то получаем контент
@@ -194,7 +195,7 @@ class Scrapper:
                         self.stat['unicode_decode_error'] = self.stat.get('unicode_decode_error', 0) + 1
                         return None
 
-            except (ServerConnectionError, ClientOSError, TimeoutError):
+            except (ClientError, TimeoutError):
                 if attempt < self.MAX_ATTEMPTS - 1:
                     await sleep(self.SLEEP_TIME)
 
