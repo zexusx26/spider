@@ -50,7 +50,6 @@ async def load(url: str, depth: int = 0):
         await scrapper.scrape(scrapper.doctor(url), depth=depth)
         await scrapper.flush()
         scrapper.clear_message()
-        print(scrapper.stat)
 
 
 async def get(url: str, counter: int = 1):
