@@ -7,7 +7,7 @@
 * Язык реализации `python3.6`
 * Хранилище `PostgreSQL`
 
-# Установка
+# Сборка образа
 
 ```bash
 $ git clone https://github.com/zexusx26/spider
@@ -31,6 +31,11 @@ $ make shutdown
 
 ```bash
 $ make start
+```
+
+Запуск обходчика и получение URL и заголовков осуществляется по следующему формату:
+
+```bash
 $ docker-compose run --rm app ./app <commands>
 ```
 
@@ -48,7 +53,6 @@ $ docker-compose run --rm app ./app load <url> [--depth <depth>]
 Например, для обхода сайта `https://ria.ru` с глубиной 1:
 
 ```bash
-$ make start
 $ docker-compose run --rm app ./app load https://ria.ru --depth 1
 ```
 
@@ -86,3 +90,4 @@ $ make shutdown
 4. Скрипт не ходит на сайты, не относящиеся к базовому домену.
 5. Тестами покрыты не все ветки.
 6. Существующие страницы в БД перезаписываются при попытке обновления.
+7. Хранилище хранит данные внутри контейнера. Вообще это нехорошо, но это не прод.
