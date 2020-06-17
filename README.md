@@ -1,12 +1,3 @@
-# Задание 
-
-[Тестовое задание для python-разработчика](https://github.com/avtocod/python-developer-test-task)
-
-# Решение
-
-* Язык реализации `python3.6`
-* Хранилище `PostgreSQL`
-
 # Сборка образа
 
 ```bash

@@ -5,7 +5,7 @@ from asyncpg import Record
 
 from spider.db import DB
 
-from .fixtures import async_test, event_loop
+from .fixtures import async_test
 
 USER = 'spider'
 PASSWORD = 'friendlyneighborhoodspider'
@@ -17,7 +17,8 @@ HOST = 'db'
 # ИНИЦИАЛИЗАТОРЫ И ФИНАЛИЗАТОРЫ #
 #################################
 
-async def async_setup_module():
+@async_test
+async def setup_module(module=None):
     query = 'CREATE SCHEMA IF NOT EXISTS spider'
     async with DB(USER, PASSWORD, DATABASE, HOST) as db:
         await db.execute(query)
@@ -26,32 +27,20 @@ async def async_setup_module():
         await db.execute(query)
 
 
-def setup_module(module):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(async_setup_module())
-    loop.close()
-
-
-async def async_teardown_module():
+@async_test
+async def teardown_module(module=None):
     queries = [
         'DROP TABLE scrapped_data',
         'DROP SCHEMA spider'
     ]
     async with DB(USER, PASSWORD, DATABASE, HOST) as db:
         for query in queries:
-            return await db.execute(query)
+            await db.execute(query)
 
 
 ###########
 # УТИЛИТЫ #
 ###########
-
-def teardown_module(module):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(async_teardown_module())
-    loop.close()
 
 
 def record2tuple(record: Record) -> Tuple[str, str]:
@@ -81,7 +70,7 @@ async def truncate_table(db: DB):
 ##############################
 
 @async_test
-async def test_add_record(event_loop):
+async def test_add_record():
 
     record = ('https://example.com', 'title', 'html')
 
@@ -109,7 +98,7 @@ async def test_add_record(event_loop):
 
 
 @async_test
-async def test_add_records(event_loop):
+async def test_add_records():
 
     records = [
         ('https://example.com', 'title', 'html'),
@@ -132,7 +121,7 @@ async def test_add_records(event_loop):
 
 
 @async_test
-async def test_get_records(event_loop):
+async def test_get_records():
 
     records = [(f'https://{i}.example.com', f'title{i}', f'html{i}') for i in range(10)]
 
@@ -166,7 +155,7 @@ async def test_get_records(event_loop):
 
 
 @async_test
-async def test_get_many_records(event_loop):
+async def test_get_many_records():
 
     records = [(f'https://{i}.example.com', f'title{i}', f'html{i}') for i in range(10)]
     records += [(f'https://{i}.another.example.com', f'another_title{i}', f'another_html{i}') for i in range(10)]

@@ -5,7 +5,7 @@ from aiohttp import ClientError
 
 from spider.scrapper import Scrapper
 
-from .fixtures import async_test, event_loop
+from .fixtures import async_test
 from .mocks import DBMock, SessionMock
 
 ###########
@@ -38,7 +38,7 @@ def unicode_decode_error_raiser():
 ##############################
 
 @async_test
-async def test_simple_scrape(event_loop):
+async def test_simple_scrape():
 
     url = 'https://example.com/0'
     urls = {
@@ -67,7 +67,7 @@ async def test_simple_scrape(event_loop):
 
 
 @async_test
-async def test_simple_scrape_with_extended_head(event_loop):
+async def test_simple_scrape_with_extended_head():
 
     url = 'https://example.com/0'
     urls = {
@@ -96,7 +96,7 @@ async def test_simple_scrape_with_extended_head(event_loop):
 
 
 @async_test
-async def test_simple_scrape_with_wrong_head(event_loop):
+async def test_simple_scrape_with_wrong_head():
 
     url = 'https://example.com/0'
     urls = {
@@ -121,7 +121,7 @@ async def test_simple_scrape_with_wrong_head(event_loop):
 
 
 @async_test
-async def test_simple_scrape_with_head_timeout(event_loop):
+async def test_simple_scrape_with_head_timeout():
 
     url = 'https://example.com/0'
     urls = {
@@ -146,7 +146,7 @@ async def test_simple_scrape_with_head_timeout(event_loop):
 
 
 @async_test
-async def test_simple_scrape_with_head_error(event_loop):
+async def test_simple_scrape_with_head_error():
 
     url = 'https://example.com/0'
     urls = {
@@ -171,7 +171,7 @@ async def test_simple_scrape_with_head_error(event_loop):
 
 
 @async_test
-async def test_simple_scrape_with_get_timeout(event_loop):
+async def test_simple_scrape_with_get_timeout():
 
     url = 'https://example.com/0'
     urls = {
@@ -197,7 +197,7 @@ async def test_simple_scrape_with_get_timeout(event_loop):
 
 
 @async_test
-async def test_simple_scrape_with_get_error(event_loop):
+async def test_simple_scrape_with_get_error():
 
     url = 'https://example.com/0'
     urls = {
@@ -223,7 +223,7 @@ async def test_simple_scrape_with_get_error(event_loop):
 
 
 @async_test
-async def test_simple_scrape_with_text_error(event_loop):
+async def test_simple_scrape_with_text_error():
 
     url = 'https://example.com/0'
     urls = {
@@ -249,7 +249,7 @@ async def test_simple_scrape_with_text_error(event_loop):
 
 
 @async_test
-async def test_0_depth(event_loop):
+async def test_0_depth():
 
     url = 'https://example.com/1'
     urls = {
@@ -278,7 +278,7 @@ async def test_0_depth(event_loop):
 
 
 @async_test
-async def test_1_depth(event_loop):
+async def test_1_depth():
 
     load_deep = 2
     scrapped_deep = 1
@@ -313,7 +313,7 @@ async def test_1_depth(event_loop):
 
 
 @async_test
-async def test_1_depth_one_more_time(event_loop):
+async def test_1_depth_one_more_time():
 
     load_deep = 3
     scrapped_deep = 1
@@ -348,7 +348,7 @@ async def test_1_depth_one_more_time(event_loop):
 
 
 @async_test
-async def test_2_depth(event_loop):
+async def test_2_depth():
 
     load_deep = 3
     scrapped_deep = 2
@@ -383,7 +383,7 @@ async def test_2_depth(event_loop):
 
 
 @async_test
-async def test_3_depth(event_loop):
+async def test_3_depth():
 
     load_deep = 3
     scrapped_deep = 3
